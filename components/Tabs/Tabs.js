@@ -4,7 +4,7 @@ class Tabs {
     this.tabLink = this.links.map( link => {
       link.addEventListener('click', event => { this.deselect(); });
       let temp = new TabLink(link);
-      if(link.classList.contains('tabs-link-selected')) { Tabs.selectedTab = temp; }
+      if(link.classList.contains('tabs-link-selected')) { temp.select(); }
       return temp;
     })
   }
