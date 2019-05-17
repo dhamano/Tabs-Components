@@ -1,21 +1,16 @@
 class Tabs {
   constructor() {
-    this.links = document.querySelectorAll('.tabs-links .tabs-link[data-tab]');
-    this.selectedTabNum = document.querySelector('.tabs-links .tabs-link-selected').dataset.tab - 1;
-    this.tabLink = [];
-    this.links.forEach( (link, i) => {
-      link.addEventListener('click', event => { this.deselect(this.selectedTabNum); });
-      this.tabLink[i] = new TabLink(link);
+    this.links = Array.from(document.querySelectorAll('.tabs-links .tabs-link[data-tab]'));
+    this.tabLink = this.links.map( link => {
+      link.addEventListener('click', event => { this.deselect(); });
+      let temp = new TabLink(link);
+      if(link.classList.contains('tabs-link-selected')) { Tabs.selectedTab = temp; }
+      return temp;
     })
   }
 
-  setSelectedTab(tabNum) {
-    this.selectedTabNum = tabNum - 1;
-  }
-
-  deselect(event) {
-    this.tabLink[this.selectedTabNum].deselect(this.selectedTabNum);
-  }
+  static setSelectedTab(tabObj) { Tabs.selectedTab = tabObj; }
+  deselect() { Tabs.selectedTab.deselect(); }
 }
 
 class TabLink {
@@ -30,10 +25,10 @@ class TabLink {
   select() {
     this.element.classList.add('tabs-link-selected');
     this.tabItem.select();
-    pageTabs.setSelectedTab(this.data);
+    Tabs.setSelectedTab(this);
   }
 
-  deselect(selectNum) {
+  deselect() {
     this.element.classList.remove('tabs-link-selected');
     this.tabItem.deselect();
   }
@@ -44,13 +39,8 @@ class TabItem {
     this.element = element;
   }
 
-  select() {
-    this.element.classList.add('tabs-item-selected');
-  }
-
-  deselect() {
-    this.element.classList.remove('tabs-item-selected');
-  }
+  select() { this.element.classList.add('tabs-item-selected'); }
+  deselect() { this.element.classList.remove('tabs-item-selected'); }
 }
 
 const pageTabs = new Tabs('pageTabs');
